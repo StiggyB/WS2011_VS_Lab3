@@ -1,8 +1,10 @@
 package tcp_advanced;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class Connection {
@@ -11,8 +13,10 @@ public class Connection {
 	
 	
 	public Connection(Socket mySock) throws IOException {
-		in = new ObjectInputStream(mySock.getInputStream());
-		out = new ObjectOutputStream(mySock.getOutputStream());
+		OutputStream os = mySock.getOutputStream();
+		out = new ObjectOutputStream(os);
+		InputStream is = mySock.getInputStream();
+		in = new ObjectInputStream(is);
 	}
 	
 	public Object receive() throws IOException, ClassNotFoundException {

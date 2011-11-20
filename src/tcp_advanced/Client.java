@@ -1,10 +1,14 @@
 package tcp_advanced;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import namensdienst.InvokeMessage;
 
 public class Client {
 	private Socket mySocket;
@@ -14,8 +18,10 @@ public class Client {
 	public Client(String host, int port) throws UnknownHostException, IOException {
 		mySocket = new Socket(host, port);
 		
-		in = new ObjectInputStream(mySocket.getInputStream());
-		out = new ObjectOutputStream(mySocket.getOutputStream());
+		OutputStream os = mySocket.getOutputStream();
+		out = new ObjectOutputStream(os);
+		InputStream is = mySocket.getInputStream();
+		in = new ObjectInputStream(is);
 	}
 	
 	public Object receive() throws IOException, ClassNotFoundException {
@@ -37,17 +43,18 @@ public class Client {
 	 * @throws IOException 
 	 * @throws UnknownHostException 
 	 * @throws ClassNotFoundException 
+	 * @throws NoSuchMethodException 
+	 * @throws SecurityException 
 	 */
-	public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {
-		// Verbindung aufbauen
-		Client myClient = new Client("localhost", 14001);
+	public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, SecurityException, NoSuchMethodException {
+		System.out.println("RUNNING");
+		Client client = new Client("localhost", 14001);
 		
-		// Kommunikation
-		myClient.send("Knock, knock!");
-		System.out.println(myClient.receive());
+		InvokeMessage message = new InvokeMessage("IT IS!", Client.class.getMethod("receive", (Class<?>[])null), (Object[])null);
+		client.send(message);
 		
-		// Verbindung schliessen
-		myClient.close();
+		System.out.println("RUNNING... closed");
+		client.close();
 	}
 
 }
