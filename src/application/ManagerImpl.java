@@ -7,6 +7,11 @@ import mware_lib.NameService;
 import branch_access.Manager;
 import cash_access.Account;
 
+/**
+ * Bank
+ * @author Benny
+ *
+ */
 public class ManagerImpl extends Manager {
 
 	NameService nameService;
@@ -29,8 +34,11 @@ public class ManagerImpl extends Manager {
 
 	@Override
 	public boolean removeAccount(String accountID) {
-		// TODO Auto-generated method stub
 		System.out.println("removeAccount");
+		for (Account acc : accList) {
+			// if accId found then remove acc and return true. else false
+			return (((AccountImpl) acc).getAccID() == accountID) ? accList.remove(acc) : false;
+		}
 		return false;
 	}
 

@@ -6,12 +6,16 @@ import java.security.SecureRandom;
 import cash_access.Account;
 import cash_access.OverdraftException;
 
+/**
+ * Konto
+ * @author Benny
+ *
+ */
 public class AccountImpl extends Account {
 
 	private String owner;
 	private String accID;
 	private double balance;
-	
 	
 	public AccountImpl(String owner) {
 		this.balance = 0;

@@ -53,7 +53,25 @@ public class ManagerProxy extends Manager {
 	@Override
 	public boolean removeAccount(String accountID) {
 		System.out.println("remote call");
-		return false;
+		Boolean result = null;
+		try {
+			InvokeMessage iMsg = new InvokeMessage("Account", this.getClass()
+					.getMethod("removeAccount", String.class), accountID);
+			client.send(iMsg);
+			Object resultMsg = client.receive();
+			if (resultMsg instanceof Boolean) {
+				result = (Boolean)resultMsg;
+			} 
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
