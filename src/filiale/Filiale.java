@@ -171,13 +171,10 @@ public class Filiale extends Frame implements ActionListener {
 	/**
 	 * Hier werden die eigentlichen Aktionen veranlasst.
 	 */
-	static ObjectBroker ob;
-	Manager manager;
-	
 	public void actionPerformed(ActionEvent e) {
 		StatusLabel.setInfoText("");
 		
-		manager = new ManagerImpl(ob.getNameService());
+		
 		
 		if (e.getSource() == NeuesKontoButton) {	
 			if (BankTextField.getText().trim().length()==0 ) {
@@ -192,13 +189,19 @@ public class Filiale extends Frame implements ActionListener {
 				* TODO: Neues Konto einrichten lassen
 				* -------------------------------------
 				*/
-				manager.createAccount(accountOwner);
+				remoteNS.rebind(remoteNS, BankTextField.getText());
+				kontoIDneu = manager.createAccount(accountOwner);
 				
+				if (!kontoIDneu.isEmpty()) {
+					
 				
 				// TODO: Wenn erfolgreich: 
 				StatusLabel.setInfoText("Neues konto mit ID "+ kontoIDneu +" fÃ¼r " + accountOwner + " eingerichtet");
 				KontoTextFieldNeu.setText(kontoIDneu); // ins Kontofeld eintragen				
+				} else {
 				// TODO ...sonst Fehler melden!
+				StatusLabel.setInfoText("Neues konto mit ID "+ kontoIDneu +" fÃ¼r " + accountOwner + " konnte nicht eingerichtet werden");
+				}
 			}
 		} else if (e.getSource() == KontoLoeschenButton) {
 			if (BankTextField.getText().trim().length()==0 ) {
@@ -212,18 +215,23 @@ public class Filiale extends Frame implements ActionListener {
 				* TODO: Konto loeschen lassen
 				* -------------------------------------
 				*/
-				if (manager.removeAccount(kontoID))
+				if (manager.removeAccount(kontoID)) {
 				
-				
+					
 				// TODO: Wenn erfolgreich: 
 					StatusLabel.setInfoText("Konto mit ID "+ kontoID +" gelÃ¶scht");
+					KontoTextFieldDelete.setText("");
 				// TODO ...sonst Fehler melden!
-				else 
-					StatusLabel.setInfoText("Möööp");
+				} else {
+					StatusLabel.setInfoText("Konto mit ID " + kontoID + " nicht gefunden.");
+				}
 			}
 		}
 	}
 
+	private static ObjectBroker ob;
+	private static Manager manager;
+	private static NameService remoteNS;
 	/**
 	 * @param args
 	 */
@@ -231,6 +239,8 @@ public class Filiale extends Frame implements ActionListener {
 		if (args.length>0 && !args[0].equals("--help")) {
 			try {
 				ob = ObjectBroker.getBroker(args[0], Integer.parseInt(args[1]));
+				remoteNS = ob.getNameService();
+				manager = new ManagerImpl(remoteNS);
 				
 			} catch (NumberFormatException e) {
 				e.printStackTrace();

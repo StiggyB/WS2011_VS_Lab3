@@ -5,41 +5,42 @@ import java.util.List;
 
 import mware_lib.NameService;
 import branch_access.Manager;
-import cash_access.Account;
 
-/**
- * Bank
- * @author Benny
- *
- */
 public class ManagerImpl extends Manager {
 
 	NameService nameService;
-	List<Account> accList;
-	
+	List<AccountImpl> accList;
+
 	public ManagerImpl(NameService nameService) {
 		super();
 		this.nameService = nameService;
-		accList = new ArrayList<Account>();
+		accList = new ArrayList<AccountImpl>();
 	}
-	
+
 	@Override
 	public String createAccount(String owner) {
 		System.out.println("createAccount");
 		AccountImpl acc = new AccountImpl(owner);
 		accList.add(acc);
 		nameService.rebind(acc, acc.getAccID());
+		System.out.println("AccID: " + acc.getAccID());
 		return acc.getAccID();
 	}
 
 	@Override
 	public boolean removeAccount(String accountID) {
 		System.out.println("removeAccount");
-		for (Account acc : accList) {
-			// if accId found then remove acc and return true. else false
-			return (((AccountImpl) acc).getAccID() == accountID) ? accList.remove(acc) : false;
+		boolean result = false;
+		if (!(accList.isEmpty())) {
+			int i;
+			for (i = 0; i < accList.size(); i++) {
+				if ((accList.get(i).getAccID().equals(accountID))) {
+					accList.remove(i);
+					result = true;
+				}
+			}
 		}
-		return false;
+		return result;
 	}
 
 }

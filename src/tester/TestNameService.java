@@ -7,6 +7,7 @@ import mware_lib.ObjectBroker;
 import application.ManagerImpl;
 import branch_access.Manager;
 import cash_access.Account;
+import cash_access.OverdraftException;
 
 public class TestNameService {
 
@@ -30,10 +31,26 @@ public class TestNameService {
 		Manager localManager = (Manager) localNS.resolve("Manager");
 
 		System.out.println("localManager: " + localManager);
-		String localAcc = localManager.createAccount("1234");
+		String localAcc = localManager.createAccount("Hans-Peter");
 
-		System.out.println("LocalManager implemented");
+		System.out.println("LocalManager implemented with AccID: " + localAcc);
 		Account account = (Account) localNS.resolve(localAcc);
+		System.out.println("DEPOSIT with: " + account);
 		account.deposit(10);
+		
+		System.out.println("ACCOUNT: " + account);
+		double balance = account.getBalance();
+		System.out.println("Acctual balance: " + balance);
+		
+		try {
+			account.withdraw(11);
+		} catch (OverdraftException e) {
+			e.printStackTrace();
+		}
+		balance = account.getBalance();
+		System.out.println("Acctual balance: " + balance);
+		
+		System.out.println(localManager.removeAccount(localAcc));
+		
 	}
 }

@@ -17,7 +17,7 @@ public class Client {
 	
 	public Client(String host, int port) throws UnknownHostException, IOException {
 		mySocket = new Socket(host, port);
-		
+		mySocket.setReuseAddress(true);
 		OutputStream os = mySocket.getOutputStream();
 		out = new ObjectOutputStream(os);
 		InputStream is = mySocket.getInputStream();
@@ -50,7 +50,7 @@ public class Client {
 		System.out.println("RUNNING");
 		Client client = new Client("localhost", 14001);
 		
-		InvokeMessage message = new InvokeMessage("IT IS!", Client.class.getMethod("receive", (Class<?>[])null), (Object[])null);
+		InvokeMessage message = new InvokeMessage("IT IS!", "receive", (Object[])null);
 		client.send(message);
 		
 		System.out.println("RUNNING... closed");

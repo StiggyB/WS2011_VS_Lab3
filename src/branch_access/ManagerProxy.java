@@ -1,78 +1,88 @@
 package branch_access;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import namensdienst.InvokeMessage;
-
+import namensdienst.ResultMessage;
+import namensdienst.UnbindMessage;
 import tcp_advanced.Client;
-import mware_lib.NameService;
 
 public class ManagerProxy extends Manager {
 
 	private String host;
 	private int port;
 	private Client client;
-	
-	public ManagerProxy(NameService nameService, String hostName, int port) {
+	private String remoteName;
+
+	public ManagerProxy(String hostName, int port, String remoteName) {
+		super();
 		this.host = hostName;
 		this.port = port;
-		try {
-			this.client = new Client(this.host, this.port);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.remoteName = remoteName;
 	}
 
 	@Override
 	public String createAccount(String owner) {
-		System.out.println("remote call");
+		System.out.println("remote call createAccount");
 		String result = null;
 		try {
-			InvokeMessage iMsg = new InvokeMessage("Account", this.getClass()
-					.getMethod("createAccount", String.class), owner);
+			this.client = new Client(this.host, this.port);
+			InvokeMessage iMsg = new InvokeMessage(remoteName, "createAccount",
+					owner);
 			client.send(iMsg);
 			Object resultMsg = client.receive();
-			if (resultMsg instanceof String) {
-				result = (String)resultMsg;
-			} 
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+			if (resultMsg instanceof ResultMessage) {
+				Object remoteResult = ((ResultMessage) resultMsg).getResult();
+				if (remoteResult instanceof String) {
+					result = (String) remoteResult;
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
 
 	@Override
 	public boolean removeAccount(String accountID) {
-		System.out.println("remote call");
-		Boolean result = null;
+		System.out.println("remote call removeAccount");
+		Boolean result = false;
 		try {
-			InvokeMessage iMsg = new InvokeMessage("Account", this.getClass()
-					.getMethod("removeAccount", String.class), accountID);
+			this.client = new Client(this.host, this.port);
+			InvokeMessage iMsg = new InvokeMessage(remoteName, "removeAccount",
+					accountID);
 			client.send(iMsg);
 			Object resultMsg = client.receive();
-			if (resultMsg instanceof Boolean) {
-				result = (Boolean)resultMsg;
-			} 
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+			if (resultMsg instanceof ResultMessage) {
+				Object remoteResult = ((ResultMessage) resultMsg).getResult();
+				if (remoteResult instanceof Boolean) {
+					result = (Boolean)remoteResult;
+				}
+			}
+			client.close();
+			this.client = new Client(this.host, this.port);
+			UnbindMessage ubMsg = new UnbindMessage(accountID);
+			client.send(ubMsg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+			client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
 
 }
-

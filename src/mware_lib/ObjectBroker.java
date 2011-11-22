@@ -10,17 +10,16 @@ public class ObjectBroker {
 	private String host;
 	private int port;
 	private LocalNameService nameService;
-//	private NameServiceServer nameServiceServer;
-//	private Thread nsThread;
 
-	public ObjectBroker(String host, int port) throws UnknownHostException, IOException {
+	public ObjectBroker(String host, int port) throws UnknownHostException,
+			IOException {
 		this.host = host;
 		this.port = port;
 		this.nameService = new LocalNameService(this.host, this.port);
-//		this.nameServiceServer = new NameServiceServer(this.host, this.port, nameService);
 	}
 
-	public static ObjectBroker getBroker(String serviceHost, int listenPort) throws UnknownHostException, IOException {
+	public static ObjectBroker getBroker(String serviceHost, int listenPort)
+			throws UnknownHostException, IOException {
 		return new ObjectBroker(serviceHost, listenPort);
 	}
 	// Das hier zurückgelieferte Objekt soll der zentrale Einstiegspunkt

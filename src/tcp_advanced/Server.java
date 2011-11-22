@@ -11,7 +11,8 @@ public class Server {
 	private ServerSocket mySvrSocket;
 	
 	public Server(int listenPort) throws IOException {
-		mySvrSocket = new ServerSocket(listenPort);		
+		mySvrSocket = new ServerSocket(listenPort);	
+		mySvrSocket.setReuseAddress(true);
 	}
 	
 	public Connection getConnection() throws IOException {
