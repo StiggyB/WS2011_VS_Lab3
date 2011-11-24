@@ -3,7 +3,9 @@ package mware_lib;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import namensdienst.LocalNameService;
+import mware_lib.nameservice.LocalNameService;
+
+
 
 public class ObjectBroker {
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import mware_lib.NameService;
 import mware_lib.ObjectBroker;
-import application.ManagerImpl;
+import bank.Bank;
 import branch_access.Manager;
 import cash_access.Account;
 import cash_access.OverdraftException;
@@ -24,7 +24,7 @@ public class TestNameService {
 		NameService localNS = obLocal.getNameService();
 
 		System.out.println("Nameservices implemented");
-		Manager remoteManager = new ManagerImpl(remoteNS);
+		Manager remoteManager = new Bank(remoteNS.toString());
 		remoteNS.rebind(remoteManager, "Manager");
 
 		System.out.println("RemoteManager implemented: " + remoteManager);

@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 
-import namensdienst.RemoteObject;
-import namensdienst.ResultMessage;
-import tcp_advanced.Client;
+import mware_lib.RemoteObject;
+import mware_lib.messages.ResultMessage;
+import mware_lib.tcp_advanced.Client;
 
 public class TestConnection {
 

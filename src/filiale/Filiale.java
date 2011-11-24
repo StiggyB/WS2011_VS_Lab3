@@ -15,12 +15,10 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import branch_access.Manager;
-
 import mware_lib.NameService;
 import mware_lib.ObjectBroker;
+import branch_access.Manager;
 
-import application.ManagerImpl;
 
 /**
  * GUI-basierte Hauptanwendung des Geldautomaten.
@@ -189,17 +187,16 @@ public class Filiale extends Frame implements ActionListener {
 				* TODO: Neues Konto einrichten lassen
 				* -------------------------------------
 				*/
-				remoteNS.rebind(remoteNS, BankTextField.getText());
-				kontoIDneu = manager.createAccount(accountOwner);
-				
-				if (!kontoIDneu.isEmpty()) {
-					
-				
-				// TODO: Wenn erfolgreich: 
+				bank = (Manager) remoteNS.resolve(BankTextField.getText());
+				if (bank != null) {
+					kontoIDneu = bank.createAccount(accountOwner);
+				}
+				if (!kontoIDneu.equals(null)) {
+				// Wenn erfolgreich: 
 				StatusLabel.setInfoText("Neues konto mit ID "+ kontoIDneu +" für " + accountOwner + " eingerichtet");
 				KontoTextFieldNeu.setText(kontoIDneu); // ins Kontofeld eintragen				
 				} else {
-				// TODO ...sonst Fehler melden!
+				// ...sonst Fehler melden!
 				StatusLabel.setInfoText("Neues konto mit ID "+ kontoIDneu +" für " + accountOwner + " konnte nicht eingerichtet werden");
 				}
 			}
@@ -215,7 +212,7 @@ public class Filiale extends Frame implements ActionListener {
 				* TODO: Konto loeschen lassen
 				* -------------------------------------
 				*/
-				if (manager.removeAccount(kontoID)) {
+				if (bank.removeAccount(kontoID)) {
 				
 					
 				// TODO: Wenn erfolgreich: 
@@ -230,7 +227,7 @@ public class Filiale extends Frame implements ActionListener {
 	}
 
 	private static ObjectBroker ob;
-	private static Manager manager;
+	private static Manager bank;
 	private static NameService remoteNS;
 	/**
 	 * @param args
@@ -240,7 +237,6 @@ public class Filiale extends Frame implements ActionListener {
 			try {
 				ob = ObjectBroker.getBroker(args[0], Integer.parseInt(args[1]));
 				remoteNS = ob.getNameService();
-				manager = new ManagerImpl(remoteNS);
 				
 			} catch (NumberFormatException e) {
 				e.printStackTrace();

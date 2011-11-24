@@ -2,10 +2,10 @@ package branch_access;
 
 import java.io.IOException;
 
-import namensdienst.InvokeMessage;
-import namensdienst.ResultMessage;
-import namensdienst.UnbindMessage;
-import tcp_advanced.Client;
+import mware_lib.messages.InvokeMessage;
+import mware_lib.messages.ResultMessage;
+import mware_lib.messages.UnbindMessage;
+import mware_lib.tcp_advanced.Client;
 
 public class ManagerProxy extends Manager {
 

@@ -3,8 +3,8 @@ package mware_lib;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import namensdienst.RemoteObject;
-import tcp_advanced.Client;
+import mware_lib.tcp_advanced.Client;
+
 
 public class MWCommunication {
 
@@ -17,15 +17,19 @@ public class MWCommunication {
 		this.port = port;
 	}
 
-	public Object sendRequest(String name) {
-		Object result = null;
+	public Class<?> sendRequest(String name) {
+		Class<?> result = null;
 		try {
 			this.client = new Client(this.host, this.port);
 			client.send(name);
 			Object resMsg = client.receive();
 			System.out.println("Message: " + resMsg);
 			if (resMsg instanceof RemoteObject) {
-				result = ((RemoteObject) resMsg);
+				RemoteObject remoteResult = ((RemoteObject) resMsg);
+				if(remoteResult.getType() instanceof Class<?>) {
+					result = remoteResult.getType();
+				}
+				System.out.println("######################" + result);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

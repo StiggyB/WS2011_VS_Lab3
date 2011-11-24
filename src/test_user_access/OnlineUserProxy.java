@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.UnknownHostException;
 
-import namensdienst.InvokeMessage;
-import namensdienst.ResultMessage;
+import mware_lib.messages.InvokeMessage;
+import mware_lib.messages.ResultMessage;
+import mware_lib.tcp_advanced.Client;
 
-import tcp_advanced.Client;
 
 public class OnlineUserProxy extends OnlineUser {
 

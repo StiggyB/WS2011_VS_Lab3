@@ -17,16 +17,10 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import branch_access.Manager;
-
-import application.AccountImpl;
-
-import cash_access.Account;
-import cash_access.AccountProxy;
-import cash_access.OverdraftException;
-
 import mware_lib.NameService;
 import mware_lib.ObjectBroker;
+import cash_access.Account;
+import cash_access.OverdraftException;
 
 /**
  * GUI-basierte Hauptanwendung des Geldautomaten.
@@ -205,19 +199,21 @@ public class Geldautomat extends Frame implements ActionListener {
 			else {
 
 				/*---------------------------------------------
-				 * TODO: Kontostand abfragen.
+				 * Kontostand abfragen.
 				 * 
 				 * --------------------------------------------
 				 */
-				localAcc = localManager.createAccount(kontoID);
-				Account account = (Account) localNS.resolve(localAcc);
-				//acc = new AccountProxy("localhost", 1337, kontoID);
+				if ((Account) localNS.resolve(kontoID) != null) {
+					account = (Account) localNS.resolve(kontoID);
+					// Kontostandanzeige in GUI aktualisieren:
+					KontostandTextField.setText(Double.toString(account.getBalance())); 
+					StatusLabel.setInfoText(DoneMessage);
+				} else {
+					StatusLabel.setInfoText("Konto nicht gefunden");
+					account = null;
+				}
 				
-				System.out.println(account);
-				//TODO: Kontostandanzeige in GUI aktualisieren:
-				KontostandTextField.setText(Double.toString(account.getBalance())); 
 				
-				StatusLabel.setInfoText(DoneMessage);
 			}
 		}
 		else if (e.getSource() == EinzahlenButton) {
@@ -232,18 +228,22 @@ public class Geldautomat extends Frame implements ActionListener {
 				else {
 					
 					/*-----------------------------
-					 * TODO: Einzahlen veranlassen
+					 * Einzahlen veranlassen
 					 * ----------------------------
 					 */
-					acc.deposit(betrag);
+					if (account != null) {
+						account.deposit(betrag);
+					} else {
+						StatusLabel.setInfoText("Konto nicht gefunden");
+					}
 					
-					//TODO: Kontostandanzeige aktualisieren:
-					KontostandTextField.setText(Double.toString(acc.getBalance()));
+					//Kontostandanzeige aktualisieren:
+					KontostandTextField.setText(Double.toString(account.getBalance()));
 					
 					StatusLabel.setInfoText(DoneMessage);
 				}
 			} catch (NumberFormatException e1) {
-				StatusLabel.setErrorText("UngÃ¼ltiger Betrag!");				
+				StatusLabel.setErrorText("Ungültiger Betrag!");				
 			}
 		}
 		else if (e.getSource() == AbhebenButton) {
@@ -258,26 +258,55 @@ public class Geldautomat extends Frame implements ActionListener {
 				else {
 					
 					/*-----------------------------
-					 * TODO: Abheben veranlassen
+					 *  Abheben veranlassen
 					 * ----------------------------
 					 */
-					try {
-						acc.withdraw(betrag);
-					} catch (OverdraftException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
+					if (account != null) {
+						account.withdraw(betrag);
+					} else {
+						StatusLabel.setInfoText("Konto nicht gefunden");
+					}					
 					
-					// TODO: Kontostandanzeige aktualisieren:
-					KontostandTextField.setText(Double.toString(acc.getBalance()));
+					// Kontostandanzeige aktualisieren:
+					KontostandTextField.setText(Double.toString(account.getBalance()));
+					
+					StatusLabel.setInfoText(DoneMessage);
+				}
+			} catch (Exception e1) {
+				StatusLabel.setErrorText("Ungültiger Betrag!");		
+			}
+		}
+		else if (e.getSource() == SerienEinzahlenButton) {
+			try {
+				// Einzuzahlender Betrag
+				double betrag = Double.parseDouble(BetragsTextField.getText());
+				
+				//- Pruefung des Kontofeldinhalts
+				String kontoID = KontoTextField.getText();
+				if (kontoID == null || kontoID.equals("")) 
+					StatusLabel.setErrorText("Kontofeld leer bzw. null");
+				else {
+					
+					/*-----------------------------
+					 * 20000x Einzahlen veranlassen
+					 * ----------------------------
+					 */
+					if (account != null) {
+						for (int i = 0; i < 20000; i++) {
+							account.deposit(betrag);
+						}
+					} else {
+						StatusLabel.setInfoText("Konto nicht gefunden");
+					}
+					
+					//Kontostandanzeige aktualisieren:
+					KontostandTextField.setText(Double.toString(account.getBalance()));
 					
 					StatusLabel.setInfoText(DoneMessage);
 				}
 			} catch (NumberFormatException e1) {
-				StatusLabel.setErrorText("UngÃ¼ltiger Betrag!");				
+				StatusLabel.setErrorText("Ungültiger Betrag!");				
 			}
-			
 		}
 	}
 
@@ -286,30 +315,20 @@ public class Geldautomat extends Frame implements ActionListener {
 	 */
 	private static ObjectBroker ob;
 	private static NameService localNS;
-	private Account acc;
-	private static Manager localManager;
-	private static String localAcc;
-
+	private Account account;
 	
 	public static void main(String[] args) {
 		if (args.length>0 && !args[0].equals("--help")) {
 			try {
 				ob = ObjectBroker.getBroker(args[0], Integer.parseInt(args[1]));
 				localNS = ob.getNameService();
-				localManager = (Manager) localNS.resolve("a");
-
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-//			NameService localNS = ob.getNameService();
-//			localNS
 			Geldautomat kundenDienst = new Geldautomat();
 			kundenDienst.setVisible(true);		
 		} else {

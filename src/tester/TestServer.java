@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import namensdienst.ResultMessage;
+import mware_lib.messages.ResultMessage;
 
 public class TestServer {
 

@@ -3,9 +3,9 @@ package cash_access;
 import java.io.IOException;
 import java.io.Serializable;
 
-import namensdienst.InvokeMessage;
-import namensdienst.ResultMessage;
-import tcp_advanced.Client;
+import mware_lib.messages.InvokeMessage;
+import mware_lib.messages.ResultMessage;
+import mware_lib.tcp_advanced.Client;
 
 public class AccountProxy extends Account {
 	private String host;
@@ -26,7 +26,6 @@ public class AccountProxy extends Account {
 			this.client = new Client(this.host, this.port);
 			InvokeMessage iMsg = new InvokeMessage(accID, "deposit", amount);
 			client.send(iMsg);
-			client.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -35,9 +34,11 @@ public class AccountProxy extends Account {
 	@Override
 	public void withdraw(double amount) throws OverdraftException {
 		try {
+			
 			this.client = new Client(this.host, this.port);
 			InvokeMessage iMsg = new InvokeMessage(accID, "withdraw", amount);
 			client.send(iMsg);
+//			client.receive();
 			client.close();
 		} catch (IOException e) {
 			e.printStackTrace();

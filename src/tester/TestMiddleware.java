@@ -8,7 +8,7 @@ import test_user_access.OnlineUser;
 
 import mware_lib.NameService;
 import mware_lib.ObjectBroker;
-import application.ManagerImpl;
+import bank.Bank;
 import branch_access.Manager;
 
 public class TestMiddleware {
@@ -26,7 +26,7 @@ public class TestMiddleware {
 	NameService localNS = obLocal.getNameService();
 
 	System.out.println("Nameservices implemented");
-	Manager remoteManager = new ManagerImpl(remoteNS);
+	Manager remoteManager = new Bank(remoteNS.toString());
 	remoteNS.rebind(remoteManager, "Manager");
 	
 	Manager localManager = (Manager) localNS.resolve("Manager");
