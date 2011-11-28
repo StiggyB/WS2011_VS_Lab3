@@ -1,0 +1,27 @@
+############################## README ##########################################
+# Autoren:                                                                     #
+#           Benjamin Burchard                                                  #
+#           Tell Müller-Pettenpohl                                             #
+#                                                                              #
+################################################################################
+#                                                                              #
+#   Informationen zum starten unserer Applikationen von Kommandozeile:         #
+#                                                                              #
+#   Namensdienst:                                                              #
+#                                                                              #
+#   mware_lib.namensdienst.NameServiceStarter <port>                           #
+#                                                                              #
+#   Bank:                                                                      #
+#                                                                              #
+#   bank.Bank <name> <host> <port>                                             #
+#                                                                              #
+#   Filiale:                                                                   #
+#                                                                              #
+#   filiale.Filiale <host> <port>                                              #
+#                                                                              #
+#   Geldautomat:                                                               #
+#                                                                              #
+#   geldautomat.Geldautomat <host> <port>                                      #
+#                                                                              #
+################################################################################
+
