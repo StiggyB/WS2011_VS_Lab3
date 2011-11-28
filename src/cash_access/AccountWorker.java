@@ -1,4 +1,4 @@
-package branch_access;
+package cash_access;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -12,19 +12,21 @@ import mware_lib.messages.InvokeMessage;
 import mware_lib.messages.ResultMessage;
 import mware_lib.tcp_advanced.Connection;
 
-public class ManagerWorker implements Runnable {
+public class AccountWorker implements Runnable {
 
 	private Connection connection;
 	private Object remoteResult;
 	private InvokeMessage iMsg;
-	private Manager manager;
-	private Thread thread;
+	private Thread workThread;
+	private Account account;
 
-	public ManagerWorker(Connection c, InvokeMessage iMsg, Manager manager) {
-		this.thread = new Thread(this);
+	public AccountWorker(Connection connection, InvokeMessage iMsg,
+			Account account) {
+		this.connection = connection;
 		this.iMsg = iMsg;
-		this.manager = manager;
-		this.connection = c;
+		this.account = account;
+		this.workThread = new Thread(this);
+		this.remoteResult = null;
 	}
 
 	@Override
@@ -32,14 +34,13 @@ public class ManagerWorker implements Runnable {
 		ResultMessage rMsg = null;
 		try {
 			System.out.println("KEYNAME: " + iMsg.getClassName());
-			System.out.println("REMOTEOBJECT: " + manager);
+			System.out.println("REMOTEOBJECT: " + account);
 			Method invokeMeth;
 			try {
 				Class<?>[] argArray = null;
 				if (iMsg.getMethodArgs() != null) {
 					List<Class<?>> methodArgs = new ArrayList<Class<?>>();
 					for (Object type : iMsg.getMethodArgs()) {
-						System.out.println("PARAMETERVALUE: " + type);
 						methodArgs.add(unboxType(type.getClass()));
 					}
 					argArray = new Class<?>[methodArgs.size()];
@@ -47,9 +48,9 @@ public class ManagerWorker implements Runnable {
 						argArray[i] = methodArgs.get(i);
 					}
 				}
-				invokeMeth = manager.getClass().getMethod(iMsg.getMethodName(),
+				invokeMeth = account.getClass().getMethod(iMsg.getMethodName(),
 						argArray);
-				remoteResult = invokeMeth.invoke(manager,
+				remoteResult = invokeMeth.invoke(account,
 						(Object[]) iMsg.getMethodArgs());
 			} catch (SecurityException e) {
 				e.printStackTrace();
@@ -61,11 +62,12 @@ public class ManagerWorker implements Runnable {
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				remoteResult = new RemoteException(e.getClass().toString()
-						+ ": " + e.getMessage(), e);
+				remoteResult = new RemoteException(e.getCause().getClass()
+						.toString()
+						+ ": " + e.getCause().getMessage(), e);
 			}
 			System.out.println("REMOTERESULT: " + remoteResult);
-			if (remoteResult != null && remoteResult instanceof Serializable) {
+			if (remoteResult == null || remoteResult instanceof Serializable) {
 				Serializable serialResult = (Serializable) remoteResult;
 				rMsg = new ResultMessage(serialResult);
 				connection.send(rMsg);
@@ -82,7 +84,7 @@ public class ManagerWorker implements Runnable {
 	}
 
 	public void start() {
-		this.thread.start();
+		this.workThread.start();
 	}
 
 	private Class<?> unboxType(Class<?> type) {

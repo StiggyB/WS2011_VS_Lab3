@@ -1,10 +1,11 @@
 package branch_access;
 
 import java.io.IOException;
+import java.io.Serializable;
 
+import mware_lib.exceptions.RemoteException;
 import mware_lib.messages.InvokeMessage;
 import mware_lib.messages.ResultMessage;
-import mware_lib.messages.UnbindMessage;
 import mware_lib.tcp_advanced.Client;
 
 public class ManagerProxy extends Manager {
@@ -23,7 +24,6 @@ public class ManagerProxy extends Manager {
 
 	@Override
 	public String createAccount(String owner) {
-		System.out.println("remote call createAccount");
 		String result = null;
 		try {
 			this.client = new Client(this.host, this.port);
@@ -31,16 +31,23 @@ public class ManagerProxy extends Manager {
 					owner);
 			client.send(iMsg);
 			Object resultMsg = client.receive();
-			if (resultMsg instanceof ResultMessage) {
-				Object remoteResult = ((ResultMessage) resultMsg).getResult();
-				if (remoteResult instanceof String) {
-					result = (String) remoteResult;
-				}
+			if (!(resultMsg instanceof ResultMessage)) {
+				throw new RemoteException(
+						"Recieved object is no instance of ResultMessage");
 			}
+			resultMsg = ((ResultMessage) resultMsg).getResult();
+			if (!(resultMsg instanceof Serializable)) {
+				throw (Exception) resultMsg;
+			}
+			result = (String) resultMsg;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RemoteException(e.getClass().toString() + ": "
+					+ e.getMessage(), e);
 		} finally {
 			try {
 				client.close();
@@ -53,7 +60,6 @@ public class ManagerProxy extends Manager {
 
 	@Override
 	public boolean removeAccount(String accountID) {
-		System.out.println("remote call removeAccount");
 		Boolean result = false;
 		try {
 			this.client = new Client(this.host, this.port);
@@ -64,20 +70,16 @@ public class ManagerProxy extends Manager {
 			if (resultMsg instanceof ResultMessage) {
 				Object remoteResult = ((ResultMessage) resultMsg).getResult();
 				if (remoteResult instanceof Boolean) {
-					result = (Boolean)remoteResult;
+					result = (Boolean) remoteResult;
 				}
 			}
-			client.close();
-			this.client = new Client(this.host, this.port);
-			UnbindMessage ubMsg = new UnbindMessage(accountID);
-			client.send(ubMsg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-			client.close();
+				client.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
