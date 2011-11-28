@@ -11,7 +11,7 @@ import mware_lib.ObjectBroker;
 
 /**
  * Klasse fuer den Mananger der Bank.
- *
+ * test2
  */
 public class Bank extends branch_access.Manager {
 	private Hashtable<String, Account> AccountTable; // interne Liste der Konten
