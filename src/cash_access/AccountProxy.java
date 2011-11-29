@@ -25,10 +25,6 @@ public class AccountProxy extends Account {
 	@Override
 	public void deposit(double amount) {
 		try {
-			if (amount < 0) {
-				throw new RemoteException(
-						"Account method: 'deposit'. Please insert a parameter higher than 0.");
-			}
 			this.client = new Client(this.host, this.port);
 			InvokeMessage iMsg = new InvokeMessage(accID, "deposit", amount);
 			client.send(iMsg);
@@ -53,10 +49,6 @@ public class AccountProxy extends Account {
 	@Override
 	public void withdraw(double amount) throws OverdraftException {
 		try {
-			if (amount < 0) {
-				throw new RemoteException(
-						"Account method: 'withdraw'. Please insert a parameter higher than 0.");
-			}
 			this.client = new Client(this.host, this.port);
 			InvokeMessage iMsg = new InvokeMessage(accID, "withdraw", amount);
 			client.send(iMsg);

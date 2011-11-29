@@ -285,12 +285,12 @@ public class Geldautomat extends Frame implements ActionListener {
                         JOptionPane.showMessageDialog(myGUI_, e1.getClass()
                                 + ": " + e1.getException().getMessage());
                         e1.printStackTrace();
-                        StatusLabel.setErrorText("Ungültiger Betrag!");
+                        StatusLabel.setErrorText("Ungueltiger Betrag!");
                     }
 
                 }
             } catch (NumberFormatException e1) {
-                StatusLabel.setErrorText("Ungültiger Betrag!");
+                StatusLabel.setErrorText("Ungueltiger Betrag!");
             }
         } else if (e.getSource() == AbhebenButton) {
             try {
@@ -340,12 +340,12 @@ public class Geldautomat extends Frame implements ActionListener {
                         JOptionPane.showMessageDialog(myGUI_, e1.getClass()
                                 + ": " + e1.getMessage());
                         e1.printStackTrace();
-                        StatusLabel.setErrorText("Ungültiger Betrag!");
+                        StatusLabel.setErrorText("Ungueltiger Betrag!");
                     }
 
                 }
             } catch (Exception e1) {
-                StatusLabel.setErrorText("Ungültiger Betrag!");
+                StatusLabel.setErrorText("Ungueltiger Betrag!");
             }
         } else if (e.getSource() == SerienEinzahlenButton) {
             try {
@@ -397,7 +397,7 @@ public class Geldautomat extends Frame implements ActionListener {
 
                 }
             } catch (NumberFormatException e1) {
-                StatusLabel.setErrorText("Ungültiger Betrag!");
+                StatusLabel.setErrorText("Ungueltiger Betrag!");
             }
         }
     }

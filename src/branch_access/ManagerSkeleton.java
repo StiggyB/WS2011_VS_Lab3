@@ -17,7 +17,7 @@ public class ManagerSkeleton implements Runnable {
 	private Server server;
 	private int port;
 
-	public ManagerSkeleton(int managerPort, Manager manager) throws IOException {
+	public ManagerSkeleton(int managerPort, Manager manager) {
 		this.running = true;
 		this.thread = new Thread(this);
 		this.manager = manager;

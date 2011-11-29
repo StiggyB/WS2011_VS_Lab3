@@ -199,29 +199,29 @@ public class Filiale extends Frame implements ActionListener {
                     Manager manager = (Manager) ns.resolve(BankTextField
                             .getText());
                     kontoIDneu = manager.createAccount(accountOwner);
-                    StatusLabel.setInfoText("Neues konto mit ID " + kontoIDneu
-                            + " für " + accountOwner + " eingerichtet");
+                    StatusLabel.setInfoText("Neues Konto mit ID " + kontoIDneu
+                            + " fuer " + accountOwner + " eingerichtet");
                     KontoTextFieldNeu.setText(kontoIDneu); // ins Kontofeld
                                                            // eintragen
                 } catch (ConnectException e1) {
                     JOptionPane.showMessageDialog(myGUI_, e1.getClass() + ": "
                             + e1.getMessage());
-                    StatusLabel.setInfoText("Neues konto mit ID " + kontoIDneu
-                            + " für " + accountOwner
+                    StatusLabel.setInfoText("Neues Konto mit ID " + kontoIDneu
+                            + " fuer " + accountOwner
                             + " konnte nicht eingerichtet werden");
                     e1.printStackTrace();
                 } catch (UnknownHostException e1) {
                     JOptionPane.showMessageDialog(myGUI_, e1.getClass() + ": "
                             + e1.getMessage());
-                    StatusLabel.setInfoText("Neues konto mit ID " + kontoIDneu
-                            + " für " + accountOwner
+                    StatusLabel.setInfoText("Neues Konto mit ID " + kontoIDneu
+                            + " fuer " + accountOwner
                             + " konnte nicht eingerichtet werden");
                     e1.printStackTrace();
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(myGUI_, e1.getClass() + ": "
                             + e1.getMessage());
-                    StatusLabel.setInfoText("Neues konto mit ID " + kontoIDneu
-                            + " für " + accountOwner
+                    StatusLabel.setInfoText("Neues Konto mit ID " + kontoIDneu
+                            + " fuer " + accountOwner
                             + " konnte nicht eingerichtet werden");
                     e1.printStackTrace();
                 } catch (RemoteException e1) {
@@ -250,7 +250,7 @@ public class Filiale extends Frame implements ActionListener {
                             .getText());
                     if (manager.removeAccount(kontoID)) {
                         StatusLabel.setInfoText("Konto mit ID " + kontoID
-                                + " gelöscht");
+                                + " geloescht");
                         KontoTextFieldDelete.setText("");
                     } else {
                         StatusLabel.setInfoText("Konto mit ID " + kontoID

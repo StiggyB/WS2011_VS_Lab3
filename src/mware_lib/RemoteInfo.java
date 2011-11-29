@@ -7,9 +7,9 @@ public class RemoteInfo implements Serializable {
 	private static final long serialVersionUID = 7238872978717217828L;
 	private String host;
 	private int port;
-	private Class<?> type;
+	private String type;
 
-	public RemoteInfo(String host, int port, Class<?> type) {
+	public RemoteInfo(String host, int port, String type) {
 		this.host = host;
 		this.port = port;
 		this.type = type;
@@ -23,7 +23,7 @@ public class RemoteInfo implements Serializable {
 		return port;
 	}
 
-	public Class<?> getType() {
+	public String getType() {
 		return type;
 	}
 }
